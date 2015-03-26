@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>NBA Stats</title>
+<style>
+
+svg {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+rect {
+  fill: #ddd;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #fff;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .domain([0, 12])
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .domain([0,30])
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    .tickSize(-height);
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(5)
+    .tickSize(-width);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("rect")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
+
+svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
+
+//Actual D3 Drawing takes place here
+d3.csv("testNBA.csv", function(error, data){
+	
+	var point = svg.append("g")
+		.attr("class","points")
+		.selectAll("circle")
+		.data(data)
+		.enter().append("circle")
+		.attr("class","dataPoint")
+		.attr("r", 5)
+		.attr("cx", function(d) { return x(d.Pullup_Shooting); })
+		.attr("cy", function(d) { return y(d.Drives); });
+	
+	var text = svg.append("g")
+		.attr("class","labels")
+		.selectAll("text")
+		.data(data)
+		.enter().append("text")
+		.attr("x", function(d) { return x(d.Pullup_Shooting)-10; })
+		.attr("y", function(d) { return y(d.Drives)-10; })
+		.text( function(d) { return d.Team; })
+		.attr("font-family", "sans-serif")
+		.attr("font-size", "10px")
+		.attr("fill", "black");
+});
+
+</script>
