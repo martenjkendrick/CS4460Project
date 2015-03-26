@@ -46,21 +46,24 @@ var yAxis = d3.svg.axis()
     .ticks(5)
     .tickSize(-width);
 
+//Create the top-level SVG element
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+//Create the grey background rectangle element
 svg.append("rect")
     .attr("width", width)
     .attr("height", height);
 
+//Create our axes' elements
 svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis);
-
+	
 svg.append("g")
     .attr("class", "y axis")
     .call(yAxis);
@@ -68,6 +71,7 @@ svg.append("g")
 //Actual D3 Drawing takes place here
 d3.csv("testNBA.csv", function(error, data){
 	
+	//Create the data point elements
 	var point = svg.append("g")
 		.attr("class","points")
 		.selectAll("circle")
@@ -78,6 +82,7 @@ d3.csv("testNBA.csv", function(error, data){
 		.attr("cx", function(d) { return x(d.Pullup_Shooting); })
 		.attr("cy", function(d) { return y(d.Drives); });
 	
+	//Create the text label elements
 	var text = svg.append("g")
 		.attr("class","labels")
 		.selectAll("text")
